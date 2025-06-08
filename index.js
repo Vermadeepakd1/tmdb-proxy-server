@@ -57,6 +57,21 @@ app.get('/api/movie/:id', async (req, res) => {
     }
 });
 
+// Movie credits (cast & crew)
+app.get('/api/movie/:id/credits', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.TMDB_API_KEY}`);
+        if (!response.ok) throw new Error(`TMDB credits fetch failed`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Credits fetch error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch credits' });
+    }
+});
+
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
